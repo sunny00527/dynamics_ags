@@ -18,21 +18,23 @@ import android.widget.TextView;
 public class main_activity extends Activity {
 	StringBuilder myInterests = new StringBuilder();
 	LinearLayout lincontainer;
+	//总行数 
 	int rows=3;
-	
+	//总的容器数，这是指LinearLayout
 	List<LinearLayout> lins=new ArrayList<LinearLayout>();
+	//容器的LayoutParams
 	List<LinearLayout.LayoutParams> pars=new ArrayList<LinearLayout.LayoutParams>();
+	//窗口内tag的内容集合
 	List<String[]> strs=new ArrayList<String[]>();
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_activity);
 		 lincontainer=(LinearLayout)findViewById(R.id.lincontent);
+		 //设置容器
 		utils.SetView(lincontainer, this, rows);
-		;
-		
-		
-		
+		//将容器内的容器取出
 		for (int i = 0; i < rows; i++) {
 			LinearLayout lin=(LinearLayout)lincontainer.getChildAt(i);
 			lins.add(lin);
@@ -46,7 +48,6 @@ public class main_activity extends Activity {
 	void initData() {
 		
 	List<String[]> strs=	utils.GetData(rows);
-	
 	for (int i = 0; i < strs.size(); i++) {
 		LinearLayout lin=(LinearLayout)lincontainer.getChildAt(i);
 		String[] str=strs.get(i);
@@ -54,7 +55,6 @@ public class main_activity extends Activity {
 			View view = initTextView(j,i, str[j], pars.get(i), clicker1);
 			if (myInterests.indexOf(str[j]) < 0)
 				myInterests.append(str[j]);
-			
 			lin.addView(view);
 		}
 	}
@@ -65,7 +65,7 @@ public class main_activity extends Activity {
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
-			v.setBackgroundResource(R.drawable.icon_index_user_dna_s);
+			
 			String[] strs=v.getTag().toString().split("_");
 			int rowIndex = Integer.valueOf(strs[0]);
 			int colIndex=Integer.valueOf(strs[1]);
@@ -75,7 +75,9 @@ public class main_activity extends Activity {
 				for (int i = rowIndex; i < lins.get(colIndex).getChildCount(); i++) {
 
 					View temp_view = lins.get(colIndex).getChildAt(i);
-					temp_view.setTag(i + 1);
+					temp_view.setTag(String.valueOf(i + 1)+"_"+String.valueOf(colIndex));
+					
+					
 				}
 
 				lins.get(colIndex).addView(view, rowIndex);
@@ -240,6 +242,7 @@ public class main_activity extends Activity {
 		tv.setText(value);
 		tv.setTag(String.valueOf(row_index)+"_"+String.valueOf(col_index));
 		tv.setOnClickListener(clicker);
+		tv.setBackgroundResource(R.drawable.icon_index_user_dna_s);
 		return tv;
 	}
 }

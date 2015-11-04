@@ -35,7 +35,6 @@ public class utils {
 	public static List<String[]> GetData(int rows)
 	{
 		List<String[]> strs=new ArrayList<String[]>();
-		
 		for (int i = 0; i < rows; i++) {
 			String[] str = null;
 			if(i==0)
@@ -43,7 +42,7 @@ public class utils {
 			else if(i==1)
 			str = new String[]{ "TV", "明星", "海报" };
 			else if(i==2)
-				str = new String[]{"书评", "书单 ", "DIY", "烹饪"  };
+				str = new String[]{"书评", "书单 ", "DIY", "烹饪"};
 			else if(i==3)
 					str = new String[] { "自助游", "骑行" };
 			else if(i==4)
@@ -54,7 +53,6 @@ public class utils {
 				str = new String[] { "明星", "食堂" };
 			strs.add(str);
 		}
-		
 		return strs;
 	}
 }
