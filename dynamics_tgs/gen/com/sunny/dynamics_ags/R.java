@@ -16,13 +16,6 @@ public final class R {
         public static final int icon_index_user_dna_s=0x7f020002;
     }
     public static final class id {
-        public static final int lin1=0x7f060001;
-        public static final int lin2=0x7f060002;
-        public static final int lin3=0x7f060003;
-        public static final int lin4=0x7f060004;
-        public static final int lin5=0x7f060005;
-        public static final int lin6=0x7f060006;
-        public static final int lin7=0x7f060007;
         public static final int lincontent=0x7f060000;
     }
     public static final class layout {
