@@ -117,17 +117,17 @@ public class utils {
 		child_tag.title = "欧美";
 		child_tag.hasChild = false;
 		child_tag.childs = null;
-		tag.childs.add(tag);
+		tag.childs.add(child_tag);
 		child_tag = new MyTag();
 		child_tag.title = "日本";
 		child_tag.hasChild = false;
 		child_tag.childs = null;
-		tag.childs.add(tag);
+		tag.childs.add(child_tag);
 		child_tag = new MyTag();
 		child_tag.title = "大陆";
 		child_tag.hasChild = false;
 		child_tag.childs = null;
-		tag.childs.add(tag);
+		tag.childs.add(child_tag);
 		group.tags.add(tag);
 
 		tag = new MyTag();
@@ -138,12 +138,12 @@ public class utils {
 		child_tag.title = "爵士乐";
 		child_tag.hasChild = false;
 		child_tag.childs = null;
-		tag.childs.add(tag);
+		tag.childs.add(child_tag);
 		child_tag = new MyTag();
 		child_tag.title = "流行";
 		child_tag.hasChild = false;
 		child_tag.childs = null;
-		tag.childs.add(tag);
+		tag.childs.add(child_tag);
 		group.tags.add(tag);
 
 		tag = new MyTag();
@@ -165,7 +165,7 @@ public class utils {
 		child_tag.title = "大海报";
 		child_tag.hasChild = false;
 		child_tag.childs = null;
-		tag.childs.add(tag);
+		tag.childs.add(child_tag);
 		group.tags.add(tag);
 
 		tag = new MyTag();
@@ -181,17 +181,17 @@ public class utils {
 		child_tag.title = "历史";
 		child_tag.hasChild = false;
 		child_tag.childs = null;
-		tag.childs.add(tag);
+		tag.childs.add(child_tag);
 		child_tag = new MyTag();
 		child_tag.title = "文化";
 		child_tag.hasChild = false;
 		child_tag.childs = null;
-		tag.childs.add(tag);
+		tag.childs.add(child_tag);
 		child_tag = new MyTag();
 		child_tag.title = "小说";
 		child_tag.hasChild = false;
 		child_tag.childs = null;
-		tag.childs.add(tag);
+		tag.childs.add(child_tag);
 		group.tags.add(tag);
 		return group;
 	}
