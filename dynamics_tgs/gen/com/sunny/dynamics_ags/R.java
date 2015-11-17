@@ -16,7 +16,9 @@ public final class R {
         public static final int icon_index_user_dna_s=0x7f020002;
     }
     public static final class id {
-        public static final int lincontent=0x7f060000;
+        public static final int col=0x7f050001;
+        public static final int lincontent=0x7f050002;
+        public static final int tag=0x7f050000;
     }
     public static final class layout {
         public static final int main_activity=0x7f030000;
@@ -46,10 +48,10 @@ public final class R {
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f050000;
+        public static final int AppBaseTheme=0x7f060000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f050001;
+        public static final int AppTheme=0x7f060001;
     }
 }

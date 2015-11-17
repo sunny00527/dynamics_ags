@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sunny.dynamics_ags.R;
+import com.sunny.element.MyGroup;
+import com.sunny.element.MyTag;
 
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,29 +19,30 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 public class main_activity extends Activity {
-	StringBuilder myInterests = new StringBuilder();
+	//StringBuilder myInterests = new StringBuilder();
 	LinearLayout lincontainer;
-	//总行数 
-	int rows=3;
-	//总的容器数，这是指LinearLayout
-	List<LinearLayout> lins=new ArrayList<LinearLayout>();
-	//容器的LayoutParams
-	List<LinearLayout.LayoutParams> pars=new ArrayList<LinearLayout.LayoutParams>();
-	//窗口内tag的内容集合
-	List<String[]> strs=new ArrayList<String[]>();
-	
+	// 总行数
+	int rows = 3;
+	// 总的容器数，这是指LinearLayout
+	List<LinearLayout> lins = new ArrayList<LinearLayout>();
+	// 容器的LayoutParams
+	List<LinearLayout.LayoutParams> pars = new ArrayList<LinearLayout.LayoutParams>();
+	// 窗口内tag的内容集合
+//	List<String[]> strs = new ArrayList<String[]>();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_activity);
-		 lincontainer=(LinearLayout)findViewById(R.id.lincontent);
-		 //设置容器
+		lincontainer = (LinearLayout) findViewById(R.id.lincontent);
+		// 设置容器
 		utils.SetView(lincontainer, this, rows);
-		//将容器内的容器取出
+		// 将容器内的容器取出
 		for (int i = 0; i < rows; i++) {
-			LinearLayout lin=(LinearLayout)lincontainer.getChildAt(i);
+			LinearLayout lin = (LinearLayout) lincontainer.getChildAt(i);
 			lins.add(lin);
-			LinearLayout.LayoutParams par= (LinearLayout.LayoutParams)lin.getLayoutParams();
+			LinearLayout.LayoutParams par = (LinearLayout.LayoutParams) lin
+					.getLayoutParams();
 			par.setMargins(10, 10, 10, 10);
 			pars.add(par);
 		}
@@ -46,201 +50,137 @@ public class main_activity extends Activity {
 	}
 
 	void initData() {
+
+		//List<String[]> strs = utils.GetData(rows);
 		
-	List<String[]> strs=	utils.GetData(rows);
-	for (int i = 0; i < strs.size(); i++) {
-		LinearLayout lin=(LinearLayout)lincontainer.getChildAt(i);
-		String[] str=strs.get(i);
-		for (int j = 0; j < str.length; j++) {
-			View view = initTextView(j,i, str[j], pars.get(i), clicker1);
-			if (myInterests.indexOf(str[j]) < 0)
-				myInterests.append(str[j]);
-			lin.addView(view);
+		List<MyGroup> groups=utils.InitData(utils.loadSource());
+		
+	/*	for (int row = 0; row < strs.size(); row++) {
+			LinearLayout lin = (LinearLayout) lincontainer.getChildAt(row);
+			String[] str = strs.get(row);
+			for (int col = 0; col < str.length; col++) {
+				View view = initTextView(col, row, str[col], pars.get(row), clicker1);
+				if (myInterests.indexOf(str[col]) < 0)
+					myInterests.append(str[col]);
+				lin.addView(view);
+			}
+		}*/
+		for (int row = 0; row < groups.size(); row++) {
+			LinearLayout lin = (LinearLayout) lincontainer.getChildAt(row);
+			MyGroup group = groups.get(row);
+			for (int col = 0; col < group.tags.size(); col++) {
+				View view = initTextView(col, row,group.tags.get(col), pars.get(row), clicker1);
+				lin.addView(view);
+			}
 		}
 	}
-	}
 
-	int categoryCount = 1;// �ӷ����
+	//表示有多少个子类
+	int categoryCount = 3;
 	OnClickListener clicker1 = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
+			MyTag tag=(MyTag)v.getTag(R.id.tag);
+			if(!tag.hasChild)
+			{
+				return;
+			}
+			categoryCount=tag.childs.size();
+			String[] strs = v.getTag(R.id.col).toString().split("_");
+			int colIndex = Integer.valueOf(strs[0]);
+			int rowIndex = Integer.valueOf(strs[1]);
+
+			LinearLayout linThird=null;
+			int preCount=0;
+			int nextCount=0;
+			int myCount=lins.get(rowIndex).getChildCount();
 			
-			String[] strs=v.getTag().toString().split("_");
-			int rowIndex = Integer.valueOf(strs[0]);
-			int colIndex=Integer.valueOf(strs[1]);
-			// Log.i("", ">>>>>>>>>���������"+String.valueOf(currentIndex));
-			if (categoryCount == 1) {
-				View view = initTextView(rowIndex,colIndex, "子类", pars.get(colIndex), clicker1);
-				for (int i = rowIndex; i < lins.get(colIndex).getChildCount(); i++) {
-
-					View temp_view = lins.get(colIndex).getChildAt(i);
-					temp_view.setTag(String.valueOf(i + 1)+"_"+String.valueOf(colIndex));
-					
-					
-				}
-
-				lins.get(colIndex).addView(view, rowIndex);
+			//判断上下哪个行比较短
+			if(rowIndex>0&&rowIndex<lins.size()-1)
+			{
+				preCount=lins.get(rowIndex-1).getChildCount();
+				nextCount=lins.get(rowIndex+1).getChildCount();
 			}
-
+			else if(rowIndex==0)
+				nextCount=lins.get(rowIndex+1).getChildCount();
+			else  if(rowIndex==lins.size()-1)
+				preCount=lins.get(rowIndex-1).getChildCount();
+			
+			if(myCount>preCount||myCount>nextCount)
+			{
+				if(preCount>nextCount&&nextCount>0)
+					linThird=lins.get(rowIndex+1);
+				if(preCount>nextCount&&nextCount==0)
+					linThird=lins.get(rowIndex-1);
+				else if(nextCount>preCount&&preCount>0)
+					linThird=lins.get(rowIndex-1);
+				else if(nextCount>preCount&&preCount==0)
+					linThird=null;
+				else if(nextCount==preCount&&preCount>0)
+					linThird=lins.get(rowIndex-1);
+			}
+			//判断有多少子分类,在分类大于2的时候地，和会考虑在上下的行中加入新元素
+			if (categoryCount == 1) {
+				addone(lins.get(rowIndex),tag.childs,colIndex, rowIndex);
+			}
+			else if (categoryCount == 2) {
+				addtwo(lins.get(rowIndex),tag.childs,colIndex, rowIndex);
+			}
+			//此时考虑在上下最短的 行中加入第三个元素，以谋求平衡
+			else if (categoryCount == 3) {
+				addtwo(lins.get(rowIndex),tag.childs,colIndex, rowIndex);
+				if(linThird!=null)
+				{
+					addone(linThird,tag.childs,colIndex,rowIndex);
+				}
+			}
 		}
 	};
-	/*OnClickListener clicker2 = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			int currentIndex = Integer.valueOf(v.getTag().toString());
-			v.setBackgroundResource(R.drawable.icon_index_user_dna_s);
-			// Log.i("", ">>>>>>>>>���������"+String.valueOf(currentIndex));
-			if (categoryCount == 1) {
-				View tv = initTextView(currentIndex, "子类", par2, clicker2);
-				for (int i = currentIndex; i < lin2.getChildCount(); i++) {
-
-					View temp_view = lin2.getChildAt(i);
-					temp_view.setTag(i + 1);
-				}
-
-				lin2.addView(tv, currentIndex);
-
-				tv = initTextView(currentIndex, "子类", par1, clicker1);
-				for (int i = currentIndex; i < lin1.getChildCount(); i++) {
-					tv.setLayoutParams(par1);
-					View view = lin1.getChildAt(i);
-					view.setTag(i + 1);
-				}
-				lin1.addView(tv, currentIndex);
+	
+	private void addtwo(LinearLayout lin,List<MyTag> tags,int colIndex, int rowIndex) {
+		
+			View view1 = initTextView(colIndex, rowIndex, tags.get(0),pars.get(rowIndex), clicker1);
+			for (int i = colIndex; i < lin.getChildCount(); i++) {
+				View temp_view = lin.getChildAt(i);
+				if(i==colIndex)
+					temp_view.setTag(String.valueOf(i + 1) + "_"+ String.valueOf(rowIndex));
+				else
+					temp_view.setTag(String.valueOf(i + 2) + "_"+ String.valueOf(rowIndex));
 			}
-
+			View view2 = initTextView(colIndex+1, rowIndex, tags.get(1),pars.get(rowIndex), clicker1);
+			lin.addView(view1, colIndex);
+			lin.addView(view2, colIndex+2);
 		}
-	};
-	OnClickListener clicker3 = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			int currentIndex = Integer.valueOf(v.getTag().toString());
-			v.setBackgroundResource(R.drawable.icon_index_user_dna_s);
-			// Log.i("", ">>>>>>>>>���������"+String.valueOf(currentIndex));
-			if (categoryCount == 1) {
-				View tv = initTextView(currentIndex, "子类", par3, clicker3);
-				for (int i = currentIndex; i < lin3.getChildCount(); i++) {
-
-					View view = lin3.getChildAt(i);
-					view.setTag(i + 1);
-				}
-
-				lin3.addView(tv, currentIndex);
+	
+	private void addone(LinearLayout lin,List<MyTag> tags,int colIndex, int rowIndex) {
+		
+			View view1 = initTextView(colIndex, rowIndex, tags.get(0),pars.get(rowIndex), clicker1);
+			for (int i = colIndex; i < lin.getChildCount(); i++) {
+				View temp_view = lin.getChildAt(i);
+				temp_view.setTag(String.valueOf(i + 1) + "_"+ String.valueOf(rowIndex));
 			}
-
+			lin.addView(view1, colIndex);
 		}
-	};
-	OnClickListener clicker4 = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			int currentIndex = Integer.valueOf(v.getTag().toString());
-			v.setBackgroundResource(R.drawable.icon_index_user_dna_s);
-			// Log.i("", ">>>>>>>>>���������"+String.valueOf(currentIndex));
-			if (categoryCount == 1) {
-				View tv = initTextView(currentIndex, "子类", par4, clicker4);
-				for (int i = currentIndex; i < lin4.getChildCount(); i++) {
-
-					View view = lin4.getChildAt(i);
-					view.setTag(i + 1);
-				}
-
-				lin4.addView(tv, currentIndex);
-			}
-
-		}
-	};
-
-	OnClickListener clicker5 = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			int currentIndex = Integer.valueOf(v.getTag().toString());
-			v.setBackgroundResource(R.drawable.icon_index_user_dna_s);
-			// Log.i("", ">>>>>>>>>���������"+String.valueOf(currentIndex));
-			if (categoryCount == 1) {
-				View tv = initTextView(currentIndex, "子类", par5, clicker5);
-				for (int i = currentIndex; i < lin5.getChildCount(); i++) {
-
-					View view = lin5.getChildAt(i);
-					view.setTag(i + 1);
-				}
-
-				lin5.addView(tv, currentIndex);
-			}
-
-		}
-	};
-	OnClickListener clicker6 = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			int currentIndex = Integer.valueOf(v.getTag().toString());
-			v.setBackgroundResource(R.drawable.icon_index_user_dna_s);
-			// Log.i("", ">>>>>>>>>���������"+String.valueOf(currentIndex));
-			if (categoryCount == 1) {
-				View tv = initTextView(currentIndex, "子类", par6, clicker6);
-				for (int i = currentIndex; i < lin6.getChildCount(); i++) {
-
-					View view = lin6.getChildAt(i);
-					view.setTag(i + 1);
-				}
-
-				lin6.addView(tv, currentIndex);
-			}
-
-		}
-	};
-	OnClickListener clicker7 = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			int currentIndex = Integer.valueOf(v.getTag().toString());
-			v.setBackgroundResource(R.drawable.icon_index_user_dna_s);
-			// Log.i("", ">>>>>>>>>���������"+String.valueOf(currentIndex));
-			if (categoryCount == 1) {
-				View tv = initTextView(currentIndex, "子类", par7, clicker7);
-				for (int i = currentIndex; i < lin7.getChildCount(); i++) {
-
-					View view = lin7.getChildAt(i);
-					view.setTag(i + 1);
-				}
-
-				lin7.addView(tv, currentIndex);
-			}
-
-		}
-	};*/
- 
-	View initTextView(int row_index,int col_index ,String value, LayoutParams par,
-			OnClickListener clicker) {
+	View initTextView(int col_index, int row_index, MyTag tag,
+			LayoutParams par, OnClickListener clicker) {
 		TextView tv = new TextView(main_activity.this);
 		tv.setBackgroundResource(R.drawable.icon_index_user_dna_s);
 		tv.setGravity(Gravity.CENTER);
 		tv.setPadding(20, 5, 20, 5);
 		tv.setTextSize(16);
-		tv.setLayoutParams(par);
-		/*if (par == par1)
-			tv.setTextColor(Color.GREEN);
-		else if (par == par2)
-			tv.setTextColor(Color.RED);
-		else if (par == par3)
-			tv.setTextColor(Color.BLUE);
-		else if (par == par4)
-			tv.setTextColor(Color.YELLOW);
-		else if (par == par5)
-			tv.setTextColor(Color.BLACK);
-		else if (par == par6)
-			tv.setTextColor(Color.LTGRAY);
-		else if (par == par7)
-			tv.setTextColor(Color.CYAN);*/
-		
-		tv.setTextColor(Color.LTGRAY);
-		tv.setText(value);
-		tv.setTag(String.valueOf(row_index)+"_"+String.valueOf(col_index));
+		 tv.setLayoutParams(par);
+		 
+		 if(row_index==0)
+			  tv.setTextColor(Color.parseColor("#907FE5")); 
+		 else if (row_index == 1)
+			 tv.setTextColor(Color.parseColor("#232323")); 
+		else if (row_index == 2)
+				 tv.setTextColor(Color.parseColor("#F49A7D"));
+		tv.setText(tag.title);
+		tv.setTag(R.id.tag, tag);
+		tv.setTag(R.id.col, String.valueOf(col_index) + "_" + String.valueOf(row_index));
+		//tv.setTag(String.valueOf(col_index) + "_" + String.valueOf(row_index));
 		tv.setOnClickListener(clicker);
 		tv.setBackgroundResource(R.drawable.icon_index_user_dna_s);
 		return tv;

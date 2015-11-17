@@ -4,12 +4,14 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:orientation="horizontal"
+    android:fillViewport="true"
     android:scrollbars="none" >
 
     <LinearLayout
         android:id="@+id/lincontent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center_vertical|left"
         android:gravity="center"
         android:orientation="vertical" >
     </LinearLayout>
